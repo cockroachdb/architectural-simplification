@@ -1,0 +1,77 @@
+services:
+
+  us_node:
+    image: cockroachdb/cockroach:v23.2.4
+    hostname: us_node
+    container_name: us_node
+    ports:
+      - 26001:26257
+    command: start --insecure --join=us_node,eu_node,jp_node --locality=region=us-east-1,zone=us-east-1a
+    networks:
+      - app-network
+  
+  us_svc:
+    image: us_svc
+    hostname: us_svc
+    build:
+      context: services/global
+    ports:
+      - 3001:3000
+    environment:
+      - CONNECTION_STRING=postgres://root@us_node:26257/store?sslmode=disable
+    networks:
+      - app-network
+    depends_on:
+      - us_node
+
+  eu_node:
+    image: cockroachdb/cockroach:v23.2.4
+    hostname: eu_node
+    container_name: eu_node
+    ports:
+      - 26002:26257
+    command: start --insecure --join=us_node,eu_node,jp_node --locality=region=eu-central-1,zone=eu-central-1a
+    networks:
+      - app-network
+  
+  eu_svc:
+    image: eu_svc
+    hostname: eu_svc
+    build:
+      context: services/global
+    ports:
+      - 3002:3000
+    environment:
+      - CONNECTION_STRING=postgres://root@eu_node:26257/store?sslmode=disable
+    networks:
+      - app-network
+    depends_on:
+      - eu_node
+
+  jp_node:
+    image: cockroachdb/cockroach:v23.2.4
+    hostname: jp_node
+    container_name: jp_node
+    ports:
+      - 26003:26257
+    command: start --insecure --join=us_node,eu_node,jp_node --locality=region=ap-northeast-1,zone=ap-northeast-1a
+    networks:
+      - app-network
+  
+  jp_svc:
+    image: jp_svc
+    hostname: jp_svc
+    build:
+      context: services/global
+    ports:
+      - 3003:3000
+    environment:
+      - CONNECTION_STRING=postgres://root@jp_node:26257/store?sslmode=disable
+    networks:
+      - app-network
+    depends_on:
+      - jp_node
+
+networks:
+  app-network:
+    driver: bridge

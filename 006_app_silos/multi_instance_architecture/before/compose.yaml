@@ -1,0 +1,92 @@
+services:
+
+  ###########
+  # US silo #
+  ###########
+
+  us_db:
+    image: postgres:15.2-alpine
+    hostname: us_db
+    container_name: us_db
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_PASSWORD: password
+    networks:
+      - app-network
+  
+  us_svc:
+    image: us_svc
+    hostname: us_svc
+    build:
+      context: services/us
+    ports:
+      - 3001:3000
+    environment:
+      - CONNECTION_STRING=postgres://postgres:password@us_db:5432/postgres?sslmode=disable
+    networks:
+      - app-network
+    depends_on:
+      - us_db
+
+  ###########
+  # EU silo #
+  ###########
+
+  eu_db:
+    image: postgres:15.2-alpine
+    hostname: eu_db
+    container_name: eu_db
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_PASSWORD: password
+    networks:
+      - app-network
+  
+  eu_svc:
+    image: eu_svc
+    hostname: eu_svc
+    build:
+      context: services/eu
+    ports:
+      - 3002:3000
+    environment:
+      - CONNECTION_STRING=postgres://postgres:password@eu_db:5432/postgres?sslmode=disable
+    networks:
+      - app-network
+    depends_on:
+      - eu_db
+  
+  ###########
+  # JP silo #
+  ###########
+
+  jp_db:
+    image: postgres:15.2-alpine
+    hostname: jp_db
+    container_name: jp_db
+    ports:
+      - 5434:5432
+    environment:
+      POSTGRES_PASSWORD: password
+    networks:
+      - app-network
+  
+  jp_svc:
+    image: jp_svc
+    hostname: jp_svc
+    build:
+      context: services/jp
+    ports:
+      - 3003:3000
+    environment:
+      - CONNECTION_STRING=postgres://postgres:password@jp_db:5432/postgres?sslmode=disable
+    networks:
+      - app-network
+    depends_on:
+      - jp_db
+
+networks:
+  app-network:
+    driver: bridge
