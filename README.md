@@ -3,9 +3,15 @@ Code samples to accompany the Architecture Simplification project
 
 ### Resources
 
-* Accompanying YouTube video series: https://www.youtube.com/playlist?list=PL_QaflmEF2e9Dgiw8lW-Z8jq7TNDNy_3V
-* Customer webinar: https://www.cockroachlabs.com/webinars/how-to-simplify-your-architecture
-* Architectural Simplification landing page: https://www.cockroachlabs.com/architectural-simplification
+**YouTube Playlist**
+
+[![Watch the video](assets/playlist-cover.png)](https://www.youtube.com/playlist?list=PL_QaflmEF2e9Dgiw8lW-Z8jq7TNDNy_3V)
+
+**Watch the webinar**
+
+[![Watch the video](assets/webinar-cover.png)](https://www.cockroachlabs.com/webinars/how-to-simplify-your-architecture)
+
+* Visit the landing page: https://www.cockroachlabs.com/architectural-simplification
 
 ### Table of Contents
 
