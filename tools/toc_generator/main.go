@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 	"path/filepath"
 	"sort"
 	"strings"
@@ -12,7 +11,7 @@ import (
 )
 
 func main() {
-	scenarios, err := findStepsFiles(".")
+	scenarios, err := findStepsFiles()
 	if err != nil {
 		log.Fatalf("error finding steps files: %v", err)
 	}
@@ -26,28 +25,21 @@ type scenario struct {
 	scenario string
 }
 
-func findStepsFiles(directory string) ([]scenario, error) {
+func findStepsFiles() ([]scenario, error) {
 	var scenarios []scenario
 
-	visit := func(path string, info os.FileInfo, err error) error {
-		if err != nil || info.IsDir() {
-			return nil
-		}
-
-		if info.Name() == "steps.md" {
-			s := scenario{
-				fullPath: path,
-				section:  strings.Split(filepath.Clean(path), "/")[0],
-				scenario: filepath.Base(filepath.Dir(path)),
-			}
-			scenarios = append(scenarios, s)
-		}
-
-		return nil
+	matches, err := filepath.Glob("**/*/steps.md")
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	if err := filepath.Walk(directory, visit); err != nil {
-		return nil, fmt.Errorf("walking directory: %w", err)
+	for _, match := range matches {
+		s := scenario{
+			fullPath: match,
+			section:  strings.Split(filepath.Clean(match), "/")[0],
+			scenario: filepath.Base(filepath.Dir(match)),
+		}
+		scenarios = append(scenarios, s)
 	}
 
 	return scenarios, nil
