@@ -1,0 +1,99 @@
+tables:
+
+  - name: customers
+    count: 1000
+    columns:
+      - name: id
+        type: gen
+        processor:
+          value: ${uuid}
+      - name: email
+        type: gen
+        processor:
+          value: ${email}
+
+  - name: products
+    count: 100
+    unique_columns: [name]
+    columns:
+      - name: id
+        type: gen
+        processor:
+          value: ${uuid}
+      - name: name
+        type: gen
+        processor:
+          value: ${adjective} ${adverb} ${noun}
+      - name: price
+        type: gen
+        processor:
+          value: ${uint8}
+
+  - name: orders
+    count: 100000
+    columns:
+      - name: id
+        type: gen
+        processor:
+          value: ${uuid}
+      - name: customer_id
+        type: ref
+        processor:
+          table: customers
+          column: id
+      - name: ts
+        type: gen
+        processor:
+          value: ${date}
+          format: 2006-01-02T15:04:05
+      - name: total
+        type: gen
+        processor:
+          value: ${uint8}
+  
+  - name: order_items
+    count: 500000
+    columns:
+      - name: id
+        type: gen
+        processor:
+          value: ${uuid}
+      - name: order_id
+        type: ref
+        processor:
+          table: orders
+          column: id
+      - name: product_id
+        type: ref
+        processor:
+          table: products
+          column: id
+      - name: quantity
+        type: set
+        processor:
+          values: [1, 2, 3, 4, 5]
+          weights: [10, 5, 3, 2, 1]
+
+  - name: payments
+    columns:
+      - name: order_id
+        type: each
+        processor:
+          table: orders
+          column: id
+      - name: id
+        type: gen
+        processor:
+          value: ${uuid}
+      - name: ts
+        type: gen
+        processor:
+          value: ${date}
+          format: 2006-01-02T15:04:05
+      - name: amount
+        type: match
+        processor:
+          source_table: orders
+          source_column: id
+          source_value: total
+          match_column: order_id

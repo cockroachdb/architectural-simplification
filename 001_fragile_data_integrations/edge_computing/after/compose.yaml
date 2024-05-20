@@ -1,0 +1,38 @@
+services:
+
+  crdb_eu:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: crdb_eu
+    container_name: crdb_eu
+    command: start --insecure --join=crdb_eu,crdb_us,crdb_jp --locality=region=eu-central-1,zone=eu-central-1a
+    ports:
+      - 26001:26257
+      - 8001:8080
+    networks:
+      - app-network
+
+  crdb_us:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: crdb_us
+    container_name: crdb_us
+    command: start --insecure --join=crdb_eu,crdb_us,crdb_jp --locality=region=us-east-1,zone=us-east-1a
+    ports:
+      - 26002:26257
+      - 8002:8080
+    networks:
+      - app-network
+
+  crdb_jp:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: crdb_jp
+    container_name: crdb_jp
+    command: start --insecure --join=crdb_eu,crdb_us,crdb_jp --locality=region=ap-northeast-1,zone=ap-northeast-1a
+    ports:
+      - 26003:26257
+      - 8003:8080
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

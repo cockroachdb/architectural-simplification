@@ -1,0 +1,18 @@
+services:
+
+  postgres:
+    image: postgres:15.2-alpine
+    container_name: postgres
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: password
+
+  redis:
+    image: redis:7.2.3-alpine3.18
+    container_name: redis
+    ports:
+      - 6379:6379
+    restart: always
+    command: redis-server

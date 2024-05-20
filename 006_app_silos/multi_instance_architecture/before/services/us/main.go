@@ -1,10 +1,10 @@
 package main
 
 import (
-	"context"
 	"log"
 	"os"
 
+	"github.com/cockroachdb/architectural-simplification/pkg/connect"
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
@@ -16,10 +16,7 @@ func main() {
 	}
 	log.Println(url)
 
-	db, err := pgxpool.New(context.Background(), url)
-	if err != nil {
-		log.Fatalf("error connecting to database: %v", err)
-	}
+	db := connect.MustDatabase(url)
 	defer db.Close()
 
 	router := fiber.New()

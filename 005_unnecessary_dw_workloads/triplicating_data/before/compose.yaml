@@ -1,0 +1,30 @@
+services:
+
+  cockroachdb:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: cockroachdb
+    command: start-single-node --insecure
+    ports:
+      - 26257:26257
+
+  localstack: 
+    image: localstack/localstack:latest
+    environment: 
+      - DEFAULT_REGION=us-east-1
+      - EDGE_PORT=4566
+      - SERVICES=s3,lambda,logs,iam
+      - LAMBDA_RUNTIME_ENVIRONMENT_TIMEOUT=30
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports: 
+      - '4566-4583:4566-4583'
+    privileged: true
+  
+  bigquery:
+    image: ghcr.io/goccy/bigquery-emulator:latest
+    hostname: bigquery
+    container_name: bigquery
+    command: bigquery-emulator --project=local
+    ports:
+      - 9050:9050
+      - 9060:9060

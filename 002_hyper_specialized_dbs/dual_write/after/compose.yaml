@@ -1,0 +1,24 @@
+services:
+  
+  cockroachdb:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: cockroachdb
+    container_name: cockroachdb
+    command: start-single-node --insecure
+    ports:
+      - 26257:26257
+  
+  bigquery:
+    image: ghcr.io/goccy/bigquery-emulator:latest
+    hostname: bigquery
+    container_name: bigquery
+    command: bigquery-emulator --project=local
+    working_dir: /work
+    volumes:
+      - bigquery:/work
+    ports:
+      - 9050:9050
+      - 9060:9060
+
+volumes:
+  bigquery:

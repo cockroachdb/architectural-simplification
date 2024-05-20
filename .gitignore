@@ -1,2 +1,18 @@
+# Sensitive
+*.pem
+
 # Build dependencies
 **/*/go.*
+
+# Infra
+.terraform
+terraform.*
+
+# Large
+pg_archive/
+*.zip
+ids.json
+csvs/
+
+# Dev env
+.DS_Store

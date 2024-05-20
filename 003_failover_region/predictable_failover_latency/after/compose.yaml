@@ -1,0 +1,127 @@
+services:
+
+  node1:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node1
+    container_name: node1
+    command: start --insecure --join=node1,node4,node7 --locality=region=us-east-1,zone=us-east-1a
+    ports:
+      - 26001:26257
+      - 8001:8080
+    networks:
+      - app-network
+
+  node2:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node2
+    container_name: node2
+    command: start --insecure --join=node1,node4,node7 --locality=region=us-east-1,zone=us-east-1b
+    ports:
+      - 26002:26257
+      - 8002:8080
+    networks:
+      - app-network
+
+  node3:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node3
+    container_name: node3
+    command: start --insecure --join=node1,node4,node7 --locality=region=us-east-1,zone=us-east-1c
+    ports:
+      - 26003:26257
+      - 8003:8080
+    networks:
+      - app-network
+
+  node4:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node4
+    container_name: node4
+    command: start --insecure --join=node1,node4,node7 --locality=region=eu-central-1,zone=eu-central-1a
+    ports:
+      - 26004:26257
+      - 8004:8080
+    networks:
+      - app-network
+
+  node5:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node5
+    container_name: node5
+    command: start --insecure --join=node1,node4,node7 --locality=region=eu-central-1,zone=eu-central-1b
+    ports:
+      - 26005:26257
+      - 8005:8080
+    networks:
+      - app-network
+
+  node6:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node6
+    container_name: node6
+    command: start --insecure --join=node1,node4,node7 --locality=region=eu-central-1,zone=eu-central-1c
+    ports:
+      - 26006:26257
+      - 8006:8080
+    networks:
+      - app-network
+
+  node7:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node7
+    container_name: node7
+    command: start --insecure --join=node1,node4,node7 --locality=region=us-west-2,zone=us-west-2a
+    ports:
+      - 26007:26257
+      - 8007:8080
+    networks:
+      - app-network
+  
+
+  node8:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node8
+    container_name: node8
+    command: start --insecure --join=node1,node4,node7 --locality=region=us-west-2,zone=us-west-2b
+    ports:
+      - 26008:26257
+      - 8008:8080
+    networks:
+      - app-network
+
+  node9:
+    image: cockroachdb/cockroach:v23.1.11
+    hostname: node9
+    container_name: node9
+    command: start --insecure --join=node1,node4,node7 --locality=region=us-west-2,zone=us-west-2c
+    ports:
+      - 26009:26257
+      - 8009:8080
+    networks:
+      - app-network
+
+  haproxy:
+    hostname: haproxy
+    image: timveil/dynamic-haproxy:latest
+    ports:
+      - 26257:26257
+      - 8080:8080
+      - 8081:8081
+    environment:
+      - NODES=node1 node2 node3 node4 node5 node6 node7 node8 node9
+    links:
+      - node1
+      - node2
+      - node3
+      - node4
+      - node5
+      - node6
+      - node7
+      - node8
+      - node9
+    networks:
+    - app-network
+
+networks:
+  app-network:
+    driver: bridge
